@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4"><i class="bi bi-speedometer2"></i> Consumer Dashboard</h2>
+    
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <h3 class="text-primary">{{ active_orders }}</h3>
+                    <p class="mb-0">Active Orders</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h3 class="text-success">{{ completed_orders }}</h3>
+                    <p class="mb-0">Completed</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h3 class="text-info">{{ total_orders }}</h3>
+                    <p class="mb-0">Total Orders</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <h3 class="text-warning">{{ favorite_riders_count }}</h3>
+                    <p class="mb-0">Favorite Riders</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <div class="d-grid gap-2 d-md-flex">
+            <a href="{{ url_for('orders.create') }}" class="btn btn-primary btn-lg"><i class="bi bi-plus-circle"></i> Create Order</a>
+            <a href="{{ url_for('orders.history') }}" class="btn btn-outline-primary btn-lg"><i class="bi bi-clock-history"></i> Order History</a>
+            <a href="{{ url_for('favorites.list') }}" class="btn btn-outline-secondary btn-lg"><i class="bi bi-star"></i> Favorite Riders</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

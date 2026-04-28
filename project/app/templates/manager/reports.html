@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Reports - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4"><i class="bi bi-flag"></i> Reports to Handle</h2>
+    
+    {% if reports %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Reporter</th>
+                        <th>Reported User</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for report in reports %}
+                    <tr>
+                        <td>#{{ report.id }}</td>
+                        <td>{{ report.title[:30] }}{% if report.title|length > 30 %}...{% endif %}</td>
+                        <td>{{ report.reporter.full_name }}</td>
+                        <td>{{ report.reported_user.full_name if report.reported_user else 'N/A' }}</td>
+                        <td>
+                            <span class="badge bg-{% if report.status == 'resolved' %}success{% elif report.status == 'dismissed' %}secondary{% elif report.status == 'investigating' %}primary{% else %}warning{% endif %}">
+                                {{ report.status }}
+                            </span>
+                        </td>
+                        <td>{{ report.created_at.strftime('%b %d') }}</td>
+                        <td>
+                            <a href="{{ url_for('reports.detail', report_id=report.id) }}" class="btn btn-sm btn-outline-primary">View</a>
+                            {% if report.status in ['pending', 'investigating'] %}
+                            <a href="{{ url_for('reports.handle', report_id=report.id) }}" class="btn btn-sm btn-outline-success">Handle</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> No reports to handle at this time.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Consumer - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0"><i class="bi bi-pencil"></i> Edit Consumer: {{ consumer.full_name }}</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST">
+                        <div class="row g-3">
+                            <!-- Full Name -->
+                            <div class="col-md-6">
+                                <label for="full_name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="full_name" name="full_name"
+                                       value="{{ consumer.full_name }}" required>
+                            </div>
+
+                            <!-- Phone Number -->
+                            <div class="col-md-6">
+                                <label for="phone_number" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control" id="phone_number" name="phone_number"
+                                       value="{{ consumer.phone_number }}" required>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                       value="{{ consumer.email or '' }}">
+                                <div class="form-text">Optional</div>
+                            </div>
+
+                            <!-- Password -->
+                            <div class="col-md-6">
+                                <label for="password" class="form-label">New Password</label>
+                                <input type="password" class="form-control" id="password" name="password">
+                                <div class="form-text">Leave blank to keep current password</div>
+                            </div>
+
+                            <!-- Address -->
+                            <div class="col-12">
+                                <label for="address" class="form-label">Address <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="address" name="address" rows="3" required>{{ consumer.address }}</textarea>
+                            </div>
+
+                            <!-- Account Status -->
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="is_active" name="is_active"
+                                           {{ 'checked' if consumer.is_active else '' }}>
+                                    <label class="form-check-label" for="is_active">
+                                        Account is Active
+                                    </label>
+                                    <div class="form-text">Inactive consumers cannot login or place orders</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Consumer Info -->
+                        <div class="row g-3 mt-3">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Account Information</h6>
+                                        <p class="card-text mb-1"><strong>Created:</strong> {{ consumer.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                                        <p class="card-text mb-1"><strong>Last Login:</strong> {{ consumer.last_login.strftime('%B %d, %Y at %I:%M %p') if consumer.last_login else 'Never' }}</p>
+                                        <p class="card-text mb-0"><strong>Managed by You</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Order Statistics</h6>
+                                        <p class="card-text mb-1"><strong>Total Orders:</strong> {{ consumer.orders.count() }}</p>
+                                        <p class="card-text mb-1"><strong>Completed Orders:</strong> {{ consumer.orders.filter_by(status='completed').count() }}</p>
+                                        <p class="card-text mb-1"><strong>Cancelled Orders:</strong> {{ consumer.orders.filter_by(status='cancelled').count() }}</p>
+                                        <p class="card-text mb-0"><strong>Favorite Riders:</strong> {{ consumer.favorite_riders|length }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Default Address -->
+                        {% if consumer.default_address %}
+                        <div class="mt-3">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">Default Delivery Address</h6>
+                                    <p class="card-text mb-0">{{ consumer.default_address }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="d-flex gap-3 mt-4">
+                            <button type="submit" class="btn btn-info">
+                                <i class="bi bi-check-circle"></i> Update Consumer
+                            </button>
+                            <a href="{{ url_for('manager.consumers') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to My Consumers
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

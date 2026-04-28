@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Login - CHR{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="text-center fw-bold mb-4">
+                        <i class="bi bi-box-arrow-in-right"></i> Login
+                    </h3>
+                    
+                    <form method="POST" action="{{ url_for('auth.login') }}" id="loginForm">
+                        <div class="mb-3">
+                            <label for="phone_or_email" class="form-label">Phone Number or Email</label>
+                            <input type="text" class="form-control" id="phone_or_email" name="phone_or_email" required autofocus>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <div class="input-group login-password-field">
+                                <input type="password" class="form-control" id="password" name="password" required>
+                                <button class="btn btn-outline-secondary" type="button" id="togglePassword" aria-label="Toggle password visibility">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                            <label class="form-check-label" for="remember">Remember me</label>
+                        </div>
+
+                        <!-- Math Challenge -->
+                        <div class="my-5 text-center">
+                            <label for="math_answer" class="form-label d-flex align-items-center justify-content-center">
+                                Security Question: 
+                                <span class="badge bg-primary fs-6 mx-2" id="num1">0</span> 
+                                + 
+                                <span class="badge bg-primary fs-6 mx-2" id="num2">0</span> 
+                                = 
+                                <input type="number" class="form-control form-control-sm d-inline-block mx-2" id="math_answer" name="math_answer" required min="11" max="60" style="width: 80px;">
+                            </label>
+                            <div class="form-text">Please solve this simple math problem to continue</div>
+                        </div>
+                        
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary fw-bold">
+                                 Login <i class="bi bi-box-arrow-in-right"></i>
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('auth.forgot_password') }}" class="text-muted small">Forgot Password?</a>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <p class="text-muted mb-0">Don't have an account?</p>
+                        <a href="{{ url_for('auth.register') }}" class="btn btn-link">Register Here</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Math challenge functionality
+function generateMathChallenge() {
+    const num1 = Math.floor(Math.random() * 41) + 10; // 10-50
+    const num2 = Math.floor(Math.random() * 10) + 1; // 1-10
+    const correctAnswer = num1 + num2;
+    
+    document.getElementById('num1').textContent = num1;
+    document.getElementById('num2').textContent = num2;
+    
+    // Store correct answer in a data attribute for validation
+    document.getElementById('math_answer').dataset.correctAnswer = correctAnswer;
+    
+    // Clear the answer input
+    document.getElementById('math_answer').value = '';
+}
+
+// Initialize math challenge when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    generateMathChallenge();
+    
+    // Basic password toggle for login
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    
+    togglePassword.addEventListener('click', function() {
+        const isPassword = passwordInput.type === 'password';
+        passwordInput.type = isPassword ? 'text' : 'password';
+        this.innerHTML = isPassword ? '<i class="bi bi-eye-slash"></i>' : '<i class="bi bi-eye"></i>';
+    });
+});
+
+// Form validation
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    const answerInput = document.getElementById('math_answer');
+    const userAnswer = parseInt(answerInput.value);
+    const correctAnswer = parseInt(answerInput.dataset.correctAnswer);
+    
+    // Check if answer is empty
+    if (!answerInput.value.trim()) {
+        e.preventDefault();
+        alert('Please answer the security question.');
+        answerInput.focus();
+        return false;
+    }
+    
+    // Check if answer is correct
+    if (userAnswer !== correctAnswer) {
+        e.preventDefault();
+        alert('Incorrect answer. Please try again.');
+        generateMathChallenge(); // Generate new numbers
+        answerInput.focus();
+        return false;
+    }
+    
+    // Answer is correct, allow form submission
+    return true;
+});
+</script>
+{% endblock %}

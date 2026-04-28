@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Policy - CHR{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center mb-4">
+                <img src="{{ url_for('static', filename='images/chr.png') }}" alt="CHR" height="80" class="mb-3">
+            </div>
+            <h1 class="fw-bold text-center">Privacy Policy</h1>
+            <p class="text-muted mb-4 text-center">Last updated: November 12, 2025</p>
+            
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold">1. Information Collection</h4>
+                    <p>We collect personal information including name, phone number, address, and location data for service delivery.</p>
+                    
+                    <h4 class="mt-4 fw-bold">2. Use of Information</h4>
+                    <p>Your information is used to provide delivery services, track orders, and improve user experience.</p>
+                    
+                    <h4 class="mt-4 fw-bold">3. Data Storage</h4>
+                    <p>All data is stored securely on our servers with industry-standard encryption.</p>
+                    
+                    <h4 class="mt-4 fw-bold">4. Location Tracking</h4>
+                    <p>Rider location is tracked during active deliveries for order tracking purposes.</p>
+                    
+                    <h4 class="mt-4 fw-bold">5. Data Sharing</h4>
+                    <p>We do not sell or share your personal information with third parties without consent.</p>
+                    
+                    <h4 class="mt-4 fw-bold">6. Your Rights</h4>
+                    <p>You have the right to access, modify, or delete your personal data at any time.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

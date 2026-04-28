@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Manager Dashboard - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4"><i class="bi bi-people"></i> Manager Dashboard</h2>
+    <p class="text-muted">Manager Type: <strong>{{ manager_type|title }}</strong></p>
+    
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h3 class="text-success">{{ managed_riders }}</h3>
+                    <p class="mb-0">Managed Riders</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h3 class="text-info">{{ managed_consumers }}</h3>
+                    <p class="mb-0">Managed Consumers</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <h3 class="text-warning">{{ pending_reports }}</h3>
+                    <p class="mb-0">Pending Reports</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% if pending_reports > 0 %}
+    <div class="alert alert-warning mt-4">
+        <i class="bi bi-exclamation-triangle"></i> You have {{ pending_reports }} pending report(s) to handle.
+        <a href="{{ url_for('reports.list_reports') }}" class="alert-link">View Reports</a>
+    </div>
+    {% endif %}
+    
+    <div class="mt-4">
+        <h4 class="fw-bold mb-3">Account Management</h4>
+        <div class="row g-3">
+            {% if manager_type in ['head', 'rider'] %}
+            <div class="col-md-6">
+                <a href="{{ url_for('manager.riders') }}" class="btn btn-success btn-lg w-100">
+                    <i class="bi bi-bicycle"></i> Manage Riders ({{ managed_riders }})
+                </a>
+            </div>
+            {% endif %}
+            {% if manager_type in ['head', 'consumer'] %}
+            <div class="col-md-6">
+                <a href="{{ url_for('manager.consumers') }}" class="btn btn-info btn-lg w-100">
+                    <i class="bi bi-person"></i> Manage Consumers ({{ managed_consumers }})
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <div class="d-grid gap-2 d-md-flex">
+            <a href="{{ url_for('manager.payments') }}" class="btn btn-outline-primary btn-lg">
+                <i class="bi bi-cash"></i> View Payments
+            </a>
+            <a href="{{ url_for('reports.list_reports') }}" class="btn btn-outline-warning btn-lg">
+                <i class="bi bi-flag"></i> Manage Reports
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

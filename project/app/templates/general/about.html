@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}About - CHR{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center">
+                <img src="{{ url_for('static', filename='images/chr.png') }}" alt="CHR" height="150">
+            </div>
+            <h1 class="fw-bold mb-4 text-center">About CHR</h1>
+            <div class="mb-4">
+                <div class="p-4">
+                    <h4 class="fw-bold text-center mb-3">Our Mission</h4>
+                    <p class="text-center">Come-Here Rider (CHR) empowers tricycle drivers and connects communities through reliable delivery services, bringing convenience to remote locations where traditional delivery services struggle to reach.</p>
+                    
+                    <h4 class="mt-4 fw-bold text-center mb-3 mt-5">Core Functions & Services</h4>
+                    
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="card border-primary h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary fw-bold">
+                                        <i class="bi bi-box-seam me-2"></i>Order Management
+                                    </h5>
+                                    <ul class="list-unstyled mb-0">
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>Create and track orders in real-time</li>
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>Multiple order types support</li>
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>Order history and status updates</li>
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>Estimated delivery times</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card border-success h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title text-success fw-bold">
+                                        <i class="bi bi-geo-alt me-2"></i>Real-time Tracking
+                                    </h5>
+                                    <ul class="list-unstyled mb-0">
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>GPS-enabled rider location tracking</li>
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>Live delivery status updates</li>
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>Delivery route optimization</li>
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>Customer notifications</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="card border-info h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title text-info fw-bold">
+                                        <i class="bi bi-cash-stack me-2"></i>Payment System
+                                    </h5>
+                                    <ul class="list-unstyled mb-0">
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>Cash-on-delivery payments</li>
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>Commission-based earnings</li>
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>Transparent pricing structure</li>
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>Instant payment processing</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card border-warning h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title text-warning fw-bold">
+                                        <i class="bi bi-shield-check me-2"></i>Account Management
+                                    </h5>
+                                    <ul class="list-unstyled mb-0">
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>Role-based user system</li>
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>Secure authentication</li>
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>Profile management tools</li>
+                                        <li><i class="bi bi-check-circle text-success me-2"></i>Organization oversight</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h4 class="mt-4 fw-bold mb-3 mt-5 text-center">Who We Serve</h4>
+                    <div class="row text-center g-4">
+                        <div class="col-md-4">
+                            <div class="p-3">
+                                <i class="bi bi-person text-primary" style="font-size: 4rem;"></i>
+                                <h6 class="mt-2 fw-bold">Customers</h6>
+                                <p class="small text-muted">Easy ordering and reliable delivery to remote areas</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3">
+                                <i class="bi bi-bicycle text-success" style="font-size: 4rem;"></i>
+                                <h6 class="mt-2 fw-bold">Riders</h6>
+                                <p class="small text-muted">Flexible earning opportunities with local deliveries</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3">
+                                <i class="bi bi-building text-info" style="font-size: 4rem;"></i>
+                                <h6 class="mt-2 fw-bold">Organizations</h6>
+                                <p class="small text-muted">Comprehensive management tools for driver teams</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Terms and Conditions - CHR{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="text-center mb-4">
+                <img src="{{ url_for('static', filename='images/chr.png') }}" alt="CHR" height="80" class="mb-3">
+            </div>
+            <h1 class="fw-bold text-center">Terms and Conditions</h1>
+            <p class="text-muted mb-4 text-center">Last updated: November 12, 2025</p>
+            
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold">1. Acceptance of Terms</h4>
+                    <p>By accessing and using ComeHere Rider, you accept and agree to be bound by these terms and conditions.</p>
+                    
+                    <h4 class="mt-4 fw-bold">2. User Responsibilities</h4>
+                    <p>Users must provide accurate information and maintain the security of their account credentials.</p>
+                    
+                    <h4 class="mt-4 fw-bold">3. Service Usage</h4>
+                    <p>Our service is provided for lawful delivery purposes only. Any misuse may result in account termination.</p>
+                    
+                    <h4 class="mt-4 fw-bold">4. Payment and Commission</h4>
+                    <p>Cash-based payment system. Commission structure: Base Php 40 per order (Rider: 25, Manager: 15).</p>
+                    
+                    <h4 class="mt-4 fw-bold">5. Limitation of Liability</h4>
+                    <p>ComeHere Rider is not responsible for lost or damaged goods during delivery.</p>
+                    
+                    <h4 class="mt-4 fw-bold">6. Changes to Terms</h4>
+                    <p>We reserve the right to modify these terms at any time. Continued use constitutes acceptance.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

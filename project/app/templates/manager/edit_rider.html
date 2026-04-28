@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Rider - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="bi bi-pencil"></i> Edit Rider: {{ rider.full_name }}</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST">
+                        <div class="row g-3">
+                            <!-- Full Name -->
+                            <div class="col-md-6">
+                                <label for="full_name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="full_name" name="full_name"
+                                       value="{{ rider.full_name }}" required>
+                            </div>
+
+                            <!-- Phone Number -->
+                            <div class="col-md-6">
+                                <label for="phone_number" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control" id="phone_number" name="phone_number"
+                                       value="{{ rider.phone_number }}" required>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                       value="{{ rider.email or '' }}">
+                                <div class="form-text">Optional</div>
+                            </div>
+
+                            <!-- Password -->
+                            <div class="col-md-6">
+                                <label for="password" class="form-label">New Password</label>
+                                <input type="password" class="form-control" id="password" name="password">
+                                <div class="form-text">Leave blank to keep current password</div>
+                            </div>
+
+                            <!-- Address -->
+                            <div class="col-12">
+                                <label for="address" class="form-label">Address <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="address" name="address" rows="3" required>{{ rider.address }}</textarea>
+                            </div>
+
+                            <!-- Account Status -->
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="is_active" name="is_active"
+                                           {{ 'checked' if rider.is_active else '' }}>
+                                    <label class="form-check-label" for="is_active">
+                                        Account is Active
+                                    </label>
+                                    <div class="form-text">Inactive riders cannot login or accept orders</div>
+                                </div>
+                            </div>
+
+                            <!-- Availability Status -->
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="is_available" name="is_available"
+                                           {{ 'checked' if rider.is_available else '' }}>
+                                    <label class="form-check-label" for="is_available">
+                                        Rider is Available
+                                    </label>
+                                    <div class="form-text">Available riders can accept new orders</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Rider Info -->
+                        <div class="row g-3 mt-3">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Account Information</h6>
+                                        <p class="card-text mb-1"><strong>Created:</strong> {{ rider.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                                        <p class="card-text mb-1"><strong>Last Login:</strong> {{ rider.last_login.strftime('%B %d, %Y at %I:%M %p') if rider.last_login else 'Never' }}</p>
+                                        <p class="card-text mb-0"><strong>Managed by You</strong></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Performance Stats</h6>
+                                        <p class="card-text mb-1"><strong>Orders Completed:</strong> {{ rider.total_orders_completed }}</p>
+                                        <p class="card-text mb-1"><strong>Average Rating:</strong>
+                                            {% if rider.average_rating > 0 %}
+                                                {{ "%.1f"|format(rider.average_rating) }}/5.0
+                                                {% for i in range(5) %}
+                                                    {% if i < rider.average_rating %}
+                                                        <i class="bi bi-star-fill text-warning"></i>
+                                                    {% else %}
+                                                        <i class="bi bi-star text-muted"></i>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% else %}
+                                                <span class="text-muted">No ratings yet</span>
+                                            {% endif %}
+                                        </p>
+                                        <p class="card-text mb-0"><strong>Total Earnings:</strong> ₱{{ "%.2f"|format(rider.total_earnings) }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Vehicle Information -->
+                        {% if rider.vehicle %}
+                        <div class="mt-3">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">Vehicle Information</h6>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <p class="card-text mb-1"><strong>Vehicle:</strong> {{ rider.vehicle.vehicle_name }}</p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p class="card-text mb-1"><strong>Type:</strong> {{ rider.vehicle.vehicle_type }}</p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <p class="card-text mb-1"><strong>Plate:</strong> {{ rider.vehicle.plate_number }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <div class="d-flex gap-3 mt-4">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle"></i> Update Rider
+                            </button>
+                            <a href="{{ url_for('manager.riders') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to My Riders
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

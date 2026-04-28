@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Handle Report - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0"><i class="bi bi-flag"></i> Handle Report #{{ report.id }}</h4>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Report Details -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">Report Information</h6>
+                                    <p class="card-text mb-1"><strong>Type:</strong> 
+                                        <span class="badge bg-secondary">{{ report.report_type|replace('_', ' ')|title }}</span>
+                                    </p>
+                                    <p class="card-text mb-1"><strong>Title:</strong> {{ report.title }}</p>
+                                    <p class="card-text mb-1"><strong>Status:</strong> 
+                                        <span class="badge bg-{% if report.status == 'resolved' %}success{% elif report.status == 'dismissed' %}secondary{% elif report.status == 'investigating' %}primary{% else %}warning{% endif %}">
+                                            {{ report.status|title }}
+                                        </span>
+                                    </p>
+                                    <p class="card-text mb-0"><strong>Created:</strong> {{ report.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">Reporter Information</h6>
+                                    <p class="card-text mb-1"><strong>Name:</strong> {{ report.reporter.full_name }}</p>
+                                    <p class="card-text mb-1"><strong>Role:</strong> 
+                                        <span class="badge bg-info">{{ report.reporter.role_type|title }}</span>
+                                    </p>
+                                    <p class="card-text mb-1"><strong>Phone:</strong> {{ report.reporter.phone_number }}</p>
+                                    <p class="card-text mb-0"><strong>Email:</strong> {{ report.reporter.email or 'N/A' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Report Content -->
+                    <div class="mb-4">
+                        <h5 class="fw-bold">Report Description</h5>
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-text">{{ report.description }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Reported User (if applicable) -->
+                    {% if report.reported_user %}
+                    <div class="mb-4">
+                        <h5 class="fw-bold">Reported User</h5>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="card-text mb-1"><strong>Name:</strong> {{ report.reported_user.full_name }}</p>
+                                        <p class="card-text mb-1"><strong>Role:</strong> 
+                                            <span class="badge bg-info">{{ report.reported_user.role_type|title }}</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="card-text mb-1"><strong>Phone:</strong> {{ report.reported_user.phone_number }}</p>
+                                        <p class="card-text mb-0"><strong>Email:</strong> {{ report.reported_user.email or 'N/A' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Current Resolution (if exists) -->
+                    {% if report.resolution_notes %}
+                    <div class="mb-4">
+                        <h5 class="fw-bold">Current Resolution Notes</h5>
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-text">{{ report.resolution_notes }}</p>
+                                {% if report.handler %}
+                                <small class="text-muted">
+                                    Handled by {{ report.handler.full_name }} on {{ report.handled_at.strftime('%B %d, %Y at %I:%M %p') }}
+                                </small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Handle Report Form -->
+                    <form method="POST">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
+                                <select class="form-select" id="status" name="status" required>
+                                    <option value="investigating" {{ 'selected' if report.status == 'investigating' else '' }}>Investigating</option>
+                                    <option value="resolved" {{ 'selected' if report.status == 'resolved' else '' }}>Resolved</option>
+                                    <option value="dismissed" {{ 'selected' if report.status == 'dismissed' else '' }}>Dismissed</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-12">
+                                <label for="resolution_notes" class="form-label">Resolution Notes <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="resolution_notes" name="resolution_notes" 
+                                          rows="4" required placeholder="Describe the actions taken or resolution details...">{{ report.resolution_notes or '' }}</textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-3 mt-4">
+                            <button type="submit" class="btn btn-warning">
+                                <i class="bi bi-check-circle"></i> Update Report
+                            </button>
+                            <a href="{{ url_for('admin.reports') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to Reports
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

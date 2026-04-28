@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}Create Order - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4"><i class="bi bi-plus-circle"></i> Create New Order</h2>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('orders.create') }}" id="createOrderForm">
+                        <!-- Destination Address -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Destination Address *</label>
+                            <div class="form-check mb-2">
+                                <input type="checkbox" class="form-check-input" id="use_default_address" name="use_default_address">
+                                <label class="form-check-label" for="use_default_address">
+                                    Use my default address
+                                </label>
+                            </div>
+                            <textarea class="form-control" id="destination_address" name="destination_address" rows="2" required>{{ current_user.default_address }}</textarea>
+                        </div>
+                        
+                        <!-- Store Name -->
+                        <div class="mb-3">
+                            <label for="store_name" class="form-label fw-bold">Store Name *</label>
+                            <input type="text" class="form-control" id="store_name" name="store_name" required>
+                        </div>
+                        
+                        <!-- Items -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Items to Purchase *</label>
+                            <div id="itemsContainer">
+                                <div class="row g-2 mb-2 item-row">
+                                    <div class="col-md-5">
+                                        <input type="text" class="form-control" name="item_name[]" placeholder="Item name" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="number" class="form-control" name="item_quantity[]" placeholder="Qty" min="1" value="1" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="number" class="form-control" name="item_price[]" placeholder="Est. Price" step="0.01" min="0">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button type="button" class="btn btn-outline-danger" onclick="removeItem(this)" disabled>
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="addItem()">
+                                <i class="bi bi-plus-circle"></i> Add Item
+                            </button>
+                        </div>
+                        
+                        <!-- Instructions -->
+                        <div class="mb-3">
+                            <label for="instructions" class="form-label fw-bold">Special Instructions (Optional)</label>
+                            <textarea class="form-control" id="instructions" name="instructions" rows="3" placeholder="e.g., Call when arrived, preferred brand, etc."></textarea>
+                        </div>
+                        
+                        <!-- Rider Selection -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Rider Selection Method *</label>
+                            <div class="form-check">
+                                <input type="radio" class="form-check-input" id="wait" name="rider_selection" value="wait" checked>
+                                <label class="form-check-label" for="wait">
+                                    Wait for available riders to accept
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input type="radio" class="form-check-input" id="auto" name="rider_selection" value="auto">
+                                <label class="form-check-label" for="auto">
+                                    Automatically assign from my favorites
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input type="radio" class="form-check-input" id="manual" name="rider_selection" value="manual">
+                                <label class="form-check-label" for="manual">
+                                    Manually select from my favorites
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <strong>Commission:</strong> Base fee is ₱40.00 (₱25 to rider, ₱15 to manager).<br>
+                            Additional charges may apply for orders with many items.
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle"></i> Create Order
+                            </button>
+                            <a href="{{ url_for('user.dashboard') }}" class="btn btn-outline-secondary btn-lg">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">Order Tips</h5>
+                    <ul class="small">
+                        <li>Be as specific as possible with item names</li>
+                        <li>Provide estimated prices if known</li>
+                        <li>Include special instructions</li>
+                        <li>Ensure your address is correct</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let itemCount = 1;
+
+function addItem() {
+    itemCount++;
+    const container = document.getElementById('itemsContainer');
+    const newRow = document.createElement('div');
+    newRow.className = 'row g-2 mb-2 item-row';
+    newRow.innerHTML = `
+        <div class="col-md-5">
+            <input type="text" class="form-control" name="item_name[]" placeholder="Item name" required>
+        </div>
+        <div class="col-md-3">
+            <input type="number" class="form-control" name="item_quantity[]" placeholder="Qty" min="1" value="1" required>
+        </div>
+        <div class="col-md-3">
+            <input type="number" class="form-control" name="item_price[]" placeholder="Est. Price" step="0.01" min="0">
+        </div>
+        <div class="col-md-1">
+            <button type="button" class="btn btn-outline-danger" onclick="removeItem(this)">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+    `;
+    container.appendChild(newRow);
+}
+
+function removeItem(button) {
+    if (document.querySelectorAll('.item-row').length > 1) {
+        button.closest('.item-row').remove();
+        itemCount--;
+    }
+}
+
+// Toggle default address
+document.getElementById('use_default_address').addEventListener('change', function() {
+    const addressField = document.getElementById('destination_address');
+    if (this.checked) {
+        addressField.value = "{{ current_user.default_address }}";
+        addressField.readOnly = true;
+    } else {
+        addressField.readOnly = false;
+    }
+});
+</script>
+{% endblock %}

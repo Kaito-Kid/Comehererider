@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Handle Report #{{ report.id }} - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4"><i class="bi bi-tools"></i> Handle Report #{{ report.id }}</h2>
+    
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">Actions</h5>
+                    
+                    {% if report.status == 'pending' %}
+                    <form method="POST" action="{{ url_for('reports.handle', report_id=report.id) }}" class="mb-3">
+                        <input type="hidden" name="action" value="assign">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-person-check"></i> Assign to Me
+                        </button>
+                    </form>
+                    {% endif %}
+                    
+                    <form method="POST" action="{{ url_for('reports.handle', report_id=report.id) }}">
+                        <div class="mb-3">
+                            <label for="action" class="form-label fw-bold">Action *</label>
+                            <select class="form-select" name="action" id="action" required>
+                                <option value="">Select action...</option>
+                                <option value="resolve">Resolve Report</option>
+                                <option value="dismiss">Dismiss Report</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="resolution_notes" class="form-label fw-bold">Resolution Notes *</label>
+                            <textarea class="form-control" name="resolution_notes" id="resolution_notes" rows="4" required placeholder="Describe what action was taken or why this was dismissed..."></textarea>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle"></i> Submit Action
+                            </button>
+                            <a href="{{ url_for('reports.detail', report_id=report.id) }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to Report
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">Report Summary</h5>
+                    <p><strong>Title:</strong> {{ report.title }}</p>
+                    <p><strong>Category:</strong> {{ report.category|replace('_', ' ')|title }}</p>
+                    <p><strong>Reporter:</strong> {{ report.reporter.full_name }}</p>
+                    {% if report.reported_user %}
+                    <p><strong>Reported User:</strong> {{ report.reported_user.full_name }}</p>
+                    {% endif %}
+                    <p class="mb-0"><strong>Description:</strong><br>{{ report.description[:200] }}{% if report.description|length > 200 %}...{% endif %}</p>
+                    <a href="{{ url_for('reports.detail', report_id=report.id) }}" class="btn btn-sm btn-link">View Full Report</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

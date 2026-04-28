@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Order #{{ order.id }} - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0"><i class="bi bi-box"></i> Order #{{ order.id }}</h2>
+        <span class="badge bg-{% if order.status == 'completed' %}success{% elif order.status == 'cancelled' %}danger{% elif order.status == 'pending' %}warning{% else %}primary{% endif %} fs-6">
+            {{ order.status|upper }}
+        </span>
+    </div>
+    
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <!-- Order Details -->
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">Order Information</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Store:</strong> {{ order.store_name }}</p>
+                            <p><strong>Destination:</strong><br>{{ order.destination_address }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Created:</strong> {{ order.created_at|local_time }}</p>
+                            {% if order.accepted_at %}
+                            <p><strong>Accepted:</strong> {{ order.accepted_at|local_time }}</p>
+                            {% endif %}
+                            {% if order.completed_at %}
+                            <p><strong>Completed:</strong> {{ order.completed_at|local_time }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% if order.instructions %}
+                    <p><strong>Instructions:</strong><br>{{ order.instructions }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Items -->
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">Items</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Est. Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order.items %}
+                                <tr>
+                                    <td>{{ item.item_name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>₱{{ "%.2f"|format(item.estimated_price) if item.estimated_price else 'N/A' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Commission -->
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">Commission</h5>
+                    <p class="mb-1">Total: <strong>₱{{ "%.2f"|format(order.total_commission) }}</strong></p>
+                    <p class="mb-1 small">Rider: ₱{{ "%.2f"|format(order.rider_earnings) }}</p>
+                    <p class="mb-0 small">Manager: ₱{{ "%.2f"|format(order.manager_earnings) }}</p>
+                </div>
+            </div>
+            
+            <!-- Rider Info -->
+            {% if order.rider %}
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">Rider</h5>
+                    <p class="mb-1">{{ order.rider.full_name }}</p>
+                    <p class="mb-1 small">{{ order.rider.phone_number }}</p>
+                    {% if order.rider.average_rating > 0 %}
+                    <p class="mb-0">
+                        {% for i in range(5) %}
+                            {% if i < order.rider.average_rating %}
+                                <i class="bi bi-star-fill text-warning"></i>
+                            {% else %}
+                                <i class="bi bi-star text-muted"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Actions -->
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">Actions</h5>
+                    <div class="d-grid gap-2">
+                        {% if current_user.role_type == 'consumer' %}
+                            {% if order.status in ['accepted', 'in_progress'] %}
+                                <a href="{{ url_for('orders.track', order_id=order.id) }}" class="btn btn-primary">
+                                    <i class="bi bi-geo-alt"></i> Track Order
+                                </a>
+                            {% endif %}
+                            {% if order.can_cancel() %}
+                                <form method="POST" action="{{ url_for('orders.cancel', order_id=order.id) }}" onsubmit="return confirm('Cancel this order?')">
+                                    <button type="submit" class="btn btn-danger w-100">
+                                        <i class="bi bi-x-circle"></i> Cancel Order
+                                    </button>
+                                </form>
+                            {% endif %}
+                            {% if order.status == 'completed' and not order.consumer_rating %}
+                                <a href="{{ url_for('orders.rate', order_id=order.id) }}" class="btn btn-warning">
+                                    <i class="bi bi-star"></i> Rate Rider
+                                </a>
+                            {% endif %}
+                        {% elif current_user.role_type == 'rider' %}
+                            {% if order.status == 'accepted' or order.status == 'in_progress' %}
+                                <a href="{{ url_for('orders.manage', order_id=order.id) }}" class="btn btn-primary">
+                                    <i class="bi bi-pencil"></i> Manage Order
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                        <a href="{% if current_user.role_type == 'consumer' %}{{ url_for('user.dashboard') }}{% else %}{{ url_for('rider.dashboard') }}{% endif %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

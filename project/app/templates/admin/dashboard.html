@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4"><i class="bi bi-shield-check"></i> Admin Dashboard</h2>
+    
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <h3 class="text-primary">{{ total_managers }}</h3>
+                    <p class="mb-0">Managers</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h3 class="text-success">{{ total_riders }}</h3>
+                    <p class="mb-0">Riders</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h3 class="text-info">{{ total_consumers }}</h3>
+                    <p class="mb-0">Consumers</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <h3 class="text-warning">{{ total_orders }}</h3>
+                    <p class="mb-0">Total Orders</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="mb-5">
+        <h4 class="fw-bold mb-3">Quick Actions</h4>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <a href="{{ url_for('admin.create_manager') }}" class="btn btn-primary btn-lg w-100">
+                    <i class="bi bi-plus-circle"></i> Add New Manager
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="{{ url_for('admin.reports') }}" class="btn btn-warning btn-lg w-100">
+                    <i class="bi bi-flag"></i> Review Reports
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="{{ url_for('admin.system_logs') }}" class="btn btn-secondary btn-lg w-100">
+                    <i class="bi bi-file-text"></i> View System Logs
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pending Reports Alert -->
+    {% if pending_reports > 0 %}
+    <div class="alert alert-warning mb-5">
+        <i class="bi bi-exclamation-triangle"></i> You have {{ pending_reports }} pending report(s) to review.
+        <a href="{{ url_for('admin.reports') }}" class="alert-link">View Reports</a>
+    </div>
+    {% endif %}
+    
+    <!-- Management Sections -->
+    <div class="row g-4 mb-5">
+        <!-- Account Management -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-people"></i> Account Management</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Manage user accounts across all roles and permissions.</p>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('admin.managers') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-person-badge"></i> Manage Managers ({{ total_managers }})
+                        </a>
+                        <a href="{{ url_for('admin.riders') }}" class="btn btn-outline-success">
+                            <i class="bi bi-bicycle"></i> Manage Riders ({{ total_riders }})
+                        </a>
+                        <a href="{{ url_for('admin.consumers') }}" class="btn btn-outline-info">
+                            <i class="bi bi-person"></i> Manage Consumers ({{ total_consumers }})
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- System Management -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="bi bi-gear"></i> System Management</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Monitor system reports and manage accounts system-wide.</p>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('admin.accounts') }}" class="btn btn-outline-danger">
+                            <i class="bi bi-shield-check"></i> Account Management
+                        </a>
+                        <a href="{{ url_for('admin.reports') }}" class="btn btn-outline-warning">
+                            <i class="bi bi-flag"></i> System Reports
+                            {% if pending_reports > 0 %}
+                            <span class="badge bg-danger">{{ pending_reports }}</span>
+                            {% endif %}
+                        </a>
+                        <a href="{{ url_for('admin.system_logs') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-file-text"></i> System Logs
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Manager - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0"><i class="bi bi-pencil"></i> Edit Manager: {{ manager.full_name }}</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST">
+                        <input type="hidden" name="action" value="update_profile">
+                        <div class="row g-3">
+                            <!-- Manager Type -->
+                            <div class="col-12">
+                                <label for="manager_type" class="form-label">Manager Type <span class="text-danger">*</span></label>
+                                <select class="form-select" id="manager_type" name="manager_type" required>
+                                    <option value="head" {{ 'selected' if manager.manager_type == 'head' else '' }}>Head Manager</option>
+                                    <option value="rider" {{ 'selected' if manager.manager_type == 'rider' else '' }}>Rider Manager</option>
+                                    <option value="consumer" {{ 'selected' if manager.manager_type == 'consumer' else '' }}>Consumer Manager</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Full Name -->
+                            <div class="col-md-6">
+                                <label for="full_name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="full_name" name="full_name" 
+                                       value="{{ manager.full_name }}" required>
+                            </div>
+                            
+                            <!-- Phone Number -->
+                            <div class="col-md-6">
+                                <label for="phone_number" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control" id="phone_number" name="phone_number" 
+                                       value="{{ manager.phone_number }}" required>
+                            </div>
+                            
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" 
+                                       value="{{ manager.email or '' }}">
+                                <div class="form-text">Optional</div>
+                            </div>
+                            
+                            <!-- Password -->
+                            <div class="col-md-6">
+                                <label for="password" class="form-label">New Password</label>
+                                <div class="password-field">
+                                    <input type="password" class="form-control" id="password" name="password">
+                                </div>
+                                <div class="form-text">Leave blank to keep current password</div>
+                            </div>
+                            
+                            <!-- Address -->
+                            <div class="col-12">
+                                <label for="address" class="form-label">Address <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="address" name="address" rows="3" required>{{ manager.address }}</textarea>
+                            </div>
+                        </div>
+                        
+                        <!-- Account Info -->
+                        <div class="row g-3 mt-3">
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Account Information</h6>
+                                        <p class="card-text mb-1"><strong>Created:</strong> {{ manager.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                                        <p class="card-text mb-1"><strong>Last Updated:</strong> {{ manager.updated_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                                        <p class="card-text mb-0"><strong>Status:</strong> 
+                                            <span class="badge bg-{{ 'success' if manager.is_active else 'secondary' }}">
+                                                {{ 'Active' if manager.is_active else 'Inactive' }}
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h6 class="card-title">Management Stats</h6>
+                                        {% if manager.manager_type in ['head', 'rider'] %}
+                                        <p class="card-text mb-1"><strong>Managed Riders:</strong> {{ manager.managed_riders.count() }}</p>
+                                        {% endif %}
+                                        {% if manager.manager_type in ['head', 'consumer'] %}
+                                        <p class="card-text mb-1"><strong>Managed Consumers:</strong> {{ manager.managed_consumers.count() }}</p>
+                                        {% endif %}
+                                        <p class="card-text mb-0"><strong>Reports Handled:</strong> {{ manager.handled_reports.count() if manager.handled_reports else 0 }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-3 mt-4">
+                            <button type="submit" class="btn btn-warning">
+                                <i class="bi bi-check-circle"></i> Update Manager
+                            </button>
+                            <a href="{{ url_for('admin.managers') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to Managers
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

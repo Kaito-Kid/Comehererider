@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}System Logs - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="mb-4">
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <h2 class="fw-bold mb-4"><i class="bi bi-file-text"></i> System Logs</h2>
+
+    <!-- Log Type Summary -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h5 class="text-info">{% set app_count = 0 %}{% for f in log_files %}{% if 'app_' in f.name %}{% set
+                        app_count = app_count + 1 %}{% endif %}{% endfor %}{{ app_count }}</h5>
+                    <p class="mb-0">Application Logs</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-danger">
+                <div class="card-body text-center">
+                    <h5 class="text-danger">{% set error_count = 0 %}{% for f in log_files %}{% if 'error' in f.name
+                        %}{% set error_count = error_count + 1 %}{% endif %}{% endfor %}{{ error_count }}</h5>
+                    <p class="mb-0">Error Logs</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <h5 class="text-warning">{% set security_count = 0 %}{% for f in log_files %}{% if 'security' in
+                        f.name %}{% set security_count = security_count + 1 %}{% endif %}{% endfor %}{{ security_count
+                        }}</h5>
+                    <p class="mb-0">Security Logs</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if log_files %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Log File</th>
+                    <th>Size</th>
+                    <th>Last Modified</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log_file in log_files %}
+                <tr>
+                    <td>
+                        <i class="bi bi-file-earmark-text"></i> {{ log_file.name }}
+                        {% if 'error' in log_file.name %}
+                        <span class="badge bg-danger ms-2">Errors</span>
+                        {% elif 'security' in log_file.name %}
+                        <span class="badge bg-warning ms-2">Security</span>
+                        {% else %}
+                        <span class="badge bg-info ms-2">General</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if log_file.size < 1024 %} {{ log_file.size }} B {% elif log_file.size < 1048576 %} {{ "%.1f"
+                            |format(log_file.size / 1024) }} KB {% else %} {{ "%.1f" |format(log_file.size / 1048576) }}
+                            MB {% endif %} </td>
+                    <td>{{ log_file.modified.strftime('%B %d, %Y at %I:%M %p') }}</td>
+                    <td>
+                        <a href="{{ url_for('admin.view_log', filename=log_file.name) }}"
+                            class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i> View
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Log Information -->
+    <div class="alert alert-info mb-4">
+        <h6 class="alert-heading"><i class="bi bi-info-circle"></i> Log Information</h6>
+        <p class="mb-2"><strong>Application Logs:</strong> General system activity, user actions, and information
+            messages</p>
+        <p class="mb-2"><strong>Error Logs:</strong> System errors, exceptions, and critical issues</p>
+        <p class="mb-0"><strong>Security Logs:</strong> Authentication attempts, security events, and access violations
+        </p>
+    </div>
+    {% else %}
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle"></i> No log files found. This could indicate:
+        <ul class="mb-0 mt-2">
+            <li>The application hasn't generated any logs yet</li>
+            <li>Log directory doesn't exist or is not accessible</li>
+            <li>Logging is not properly configured</li>
+        </ul>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

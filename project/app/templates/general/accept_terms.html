@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Accept Terms - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <h3 class="text-center fw-bold mb-4">Welcome! Please Accept Terms</h3>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Before continuing, please review and accept our terms and conditions.
+                    </div>
+                    
+                    <form method="POST" action="{{ url_for('auth.accept_terms') }}">
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="terms_accepted" name="terms_accepted" required>
+                            <label class="form-check-label" for="terms_accepted">
+                                I have read and agree to the <a href="{{ url_for('main.terms') }}" target="_blank">Terms and Conditions</a>
+                            </label>
+                        </div>
+                        
+                        <div class="form-check mb-4">
+                            <input type="checkbox" class="form-check-input" id="privacy_accepted" name="privacy_accepted" required>
+                            <label class="form-check-label" for="privacy_accepted">
+                                I have read and agree to the <a href="{{ url_for('main.privacy') }}" target="_blank">Privacy Policy</a>
+                            </label>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">Accept and Continue</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

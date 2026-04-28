@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Favorite Riders - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4"><i class="bi bi-star"></i> My Favorite Riders</h2>
+    
+    {% if favorites %}
+        <div class="row g-3">
+            {% for rider in favorites %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <i class="bi bi-person-circle" style="font-size: 4rem;"></i>
+                            <h5 class="mt-2 mb-0">{{ rider.full_name }}</h5>
+                            <p class="text-muted small mb-0">{{ rider.phone_number }}</p>
+                        </div>
+                        
+                        {% if rider.average_rating > 0 %}
+                        <div class="text-center mb-3">
+                            {% for i in range(5) %}
+                                {% if i < rider.average_rating %}
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                {% else %}
+                                    <i class="bi bi-star text-muted"></i>
+                                {% endif %}
+                            {% endfor %}
+                            <p class="small mb-0">{{ "%.1f"|format(rider.average_rating) }} / 5.0</p>
+                        </div>
+                        {% endif %}
+                        
+                        <div class="mb-3">
+                            <p class="small mb-1"><strong>Completed Orders:</strong> {{ rider.total_orders_completed }}</p>
+                            {% if rider.vehicle %}
+                            <p class="small mb-0"><strong>Vehicle:</strong> {{ rider.vehicle.vehicle_type }} - {{ rider.vehicle.plate_number }}</p>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <form method="POST" action="{{ url_for('favorites.remove', rider_id=rider.id) }}" class="d-inline">
+                                <button type="submit" class="btn btn-outline-danger w-100">
+                                    <i class="bi bi-heart-fill"></i> Remove from Favorites
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> You haven't added any favorite riders yet. Complete some orders and add riders you liked!
+        </div>
+    {% endif %}
+    
+    <div class="mt-4">
+        <a href="{{ url_for('user.dashboard') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

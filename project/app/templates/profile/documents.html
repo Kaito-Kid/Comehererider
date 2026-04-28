@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+{% block title %}My Documents - ComeHere Rider{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="fw-bold mb-4"><i class="bi bi-file-earmark-pdf"></i> My Documents</h2>
+
+  <div class="row g-4">
+    <!-- Upload Document -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0"><i class="bi bi-upload"></i> Upload Document</h5>
+        </div>
+        <div class="card-body">
+          <form method="POST" action="{{ url_for('profile.upload_document') }}" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label for="document_type" class="form-label">Document Type *</label>
+              <select class="form-select" id="document_type" name="document_type" required>
+                <option value="">Select document type...</option>
+                {% for key, value in document_types.items() %}
+                <option value="{{ key }}">{{ value }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="document_file" class="form-label">Choose File *</label>
+              <input class="form-control" type="file" id="document_file" name="document_file" 
+                     accept=".pdf,.jpg,.jpeg,.png,.gif,.webp" required>
+              <div class="form-text">Supported formats: PDF, JPG, PNG, GIF, WebP. Max size: 10MB</div>
+            </div>
+            <div class="d-grid gap-2 d-md-flex">
+              <button class="btn btn-primary" type="submit">
+                <i class="bi bi-upload"></i> Upload Document
+              </button>
+              <a href="{{ url_for('profile.view') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Profile
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Document List -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-light">
+          <h5 class="mb-0"><i class="bi bi-files"></i> Your Documents ({{ documents|length }})</h5>
+        </div>
+        <div class="card-body">
+          {% if documents %}
+          <div class="list-group list-group-flush">
+            {% for document in documents %}
+            <div class="list-group-item px-0">
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="flex-grow-1">
+                  <div class="d-flex align-items-center mb-1">
+                    {% if document.is_pdf() %}
+                    <i class="bi bi-file-earmark-pdf text-danger me-2"></i>
+                    {% elif document.is_image() %}
+                    <i class="bi bi-file-earmark-image text-primary me-2"></i>
+                    {% else %}
+                    <i class="bi bi-file-earmark text-secondary me-2"></i>
+                    {% endif %}
+                    <strong>{{ document.get_document_type_display() }}</strong>
+                    {% if document.status == 'approved' %}
+                    <span class="badge bg-success ms-2">Verified</span>
+                    {% elif document.status == 'rejected' %}
+                    <span class="badge bg-danger ms-2">Rejected</span>
+                    {% else %}
+                    <span class="badge bg-warning ms-2">Pending</span>
+                    {% endif %}
+                  </div>
+                  <div class="text-muted small">
+                    <div>{{ document.original_filename }}</div>
+                    <div>{{ document.get_file_size_display() }} • Uploaded {{ document.uploaded_at.strftime('%b %d, %Y') }}</div>
+                    {% if document.verification_notes %}
+                    <div class="text-info mt-1">
+                      <i class="bi bi-info-circle"></i> {{ document.verification_notes }}
+                    </div>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="btn-group-vertical btn-group-sm">
+                  <a href="{{ url_for('profile.download_document', document_id=document.id) }}" 
+                     class="btn btn-outline-primary btn-sm" title="Download">
+                    <i class="bi bi-download"></i>
+                  </a>
+                  <button type="button" class="btn btn-outline-danger btn-sm delete-document-btn" 
+                          data-document-id="{{ document.id }}" 
+                          data-document-type="{{ document.get_document_type_display() }}"
+                          title="Delete">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="text-center text-muted py-4">
+            <i class="bi bi-file-earmark-plus" style="font-size: 3rem;"></i>
+            <p class="mt-2 mb-0">No documents uploaded yet.</p>
+            <small>Upload your first document using the form on the left.</small>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Document Types Info -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-info text-white">
+          <h6 class="mb-0"><i class="bi bi-info-circle"></i> Accepted Document Types</h6>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+              <h6 class="text-primary">Government IDs</h6>
+              <ul class="list-unstyled small">
+                <li>• National ID</li>
+                <li>• Driver's License</li>
+                <li>• Passport</li>
+                <li>• Voter's ID</li>
+                <li>• SSS ID</li>
+                <li>• PhilHealth ID</li>
+                <li>• TIN ID</li>
+                <li>• Postal ID</li>
+              </ul>
+            </div>
+            <div class="col-md-4">
+              <h6 class="text-primary">Professional IDs</h6>
+              <ul class="list-unstyled small">
+                <li>• PRC ID</li>
+                <li>• School ID</li>
+                <li>• Senior Citizen ID</li>
+                <li>• PWD ID</li>
+              </ul>
+            </div>
+            <div class="col-md-4">
+              <h6 class="text-primary">Certificates</h6>
+              <ul class="list-unstyled small">
+                <li>• Birth Certificate</li>
+                <li>• Barangay Clearance</li>
+                <li>• Police Clearance</li>
+                <li>• NBI Clearance</li>
+                <li>• Medical Certificate</li>
+                <li>• Other Documents</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Delete document function using event delegation
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle delete button clicks
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('.delete-document-btn')) {
+            const button = e.target.closest('.delete-document-btn');
+            const documentId = button.getAttribute('data-document-id');
+            const documentType = button.getAttribute('data-document-type');
+            
+            if (confirm(`Are you sure you want to delete this ${documentType}? This action cannot be undone.`)) {
+                // Create a form to submit the delete request
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/profile/delete-document/${documentId}`;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    });
+});
+
+// Form submission feedback
+document.querySelector('form').addEventListener('submit', function() {
+    const submitBtn = this.querySelector('button[type="submit"]');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Uploading...';
+    }
+});
+
+// File size validation
+document.getElementById('document_file').addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+        const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+        if (file.size > maxSize) {
+            alert('File size must be less than 10MB. Please choose a smaller file.');
+            this.value = '';
+            return;
+        }
+        
+        // Show file info
+        const fileInfo = document.createElement('div');
+        fileInfo.className = 'alert alert-info mt-2';
+        fileInfo.innerHTML = `
+            <small>
+                <strong>Selected:</strong> ${file.name}<br>
+                <strong>Size:</strong> ${(file.size / 1024 / 1024).toFixed(2)} MB<br>
+                <strong>Type:</strong> ${file.type || 'Unknown'}
+            </small>
+        `;
+        
+        // Remove existing file info
+        const existingInfo = this.parentElement.querySelector('.alert-info');
+        if (existingInfo) {
+            existingInfo.remove();
+        }
+        
+        // Add new file info
+        this.parentElement.appendChild(fileInfo);
+    }
+});
+</script>
+{% endblock %}

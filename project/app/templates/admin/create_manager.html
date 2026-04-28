@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}Create Manager - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Create New Manager</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" id="createManagerForm">
+                        <div class="row g-3">
+                            <!-- Manager Type -->
+                            <div class="col-12">
+                                <label for="manager_type" class="form-label">Manager Type <span class="text-danger">*</span></label>
+                                <select class="form-select" id="manager_type" name="manager_type" required>
+                                    <option value="">Select Manager Type</option>
+                                    <option value="head">Head Manager</option>
+                                    <option value="rider">Rider Manager</option>
+                                    <option value="consumer">Consumer Manager</option>
+                                </select>
+                                <div class="form-text">
+                                    <strong>Head Manager:</strong> Can manage all managers, riders, and consumers<br>
+                                    <strong>Rider Manager:</strong> Can create and manage rider accounts<br>
+                                    <strong>Consumer Manager:</strong> Can create and manage consumer accounts
+                                </div>
+                            </div>
+                            
+                            <!-- Full Name -->
+                            <div class="col-md-6">
+                                <label for="full_name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="full_name" name="full_name" required>
+                            </div>
+                            
+                            <!-- Phone Number -->
+                            <div class="col-md-6">
+                                <label for="phone_number" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control" id="phone_number" name="phone_number" required>
+                            </div>
+                            
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" name="email">
+                                <div class="form-text">Optional</div>
+                            </div>
+                            
+                            <!-- Password -->
+                            <div class="col-md-6">
+                                <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                                <div class="password-field">
+                                    <input type="password" class="form-control" id="password" name="password" required>
+                                </div>
+                                <div class="form-text">Leave empty to auto-generate a secure password</div>
+                            </div>
+                            
+                            <!-- Address -->
+                            <div class="col-12">
+                                <label for="address" class="form-label">Address <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex gap-3 mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Create Manager
+                            </button>
+                            <a href="{{ url_for('admin.managers') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                    
+                    <!-- Credentials Display (hidden by default) -->
+                    <div id="credentialsContainer" class="d-none">
+                        <!-- Credentials will be inserted here after successful creation -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Show different help text based on manager type selection
+document.getElementById('manager_type').addEventListener('change', function() {
+    const helpTexts = {
+        'head': 'Head Managers have full system access and can manage all other managers, riders, and consumers. There should typically be only one head manager.',
+        'rider': 'Rider Managers can create and manage rider accounts, handle rider-related reports, and oversee delivery operations.',
+        'consumer': 'Consumer Managers can create and manage consumer accounts, handle consumer-related reports, and oversee customer service.'
+    };
+    
+    const formText = this.parentElement.querySelector('.form-text');
+    if (this.value && helpTexts[this.value]) {
+        formText.innerHTML = '<strong>Selected:</strong> ' + helpTexts[this.value];
+        formText.className = 'form-text text-info';
+    } else {
+        formText.innerHTML = '<strong>Head Manager:</strong> Can manage all managers, riders, and consumers<br><strong>Rider Manager:</strong> Can create and manage rider accounts<br><strong>Consumer Manager:</strong> Can create and manage consumer accounts';
+        formText.className = 'form-text';
+    }
+});
+
+// Handle form submission for account creation
+document.getElementById('createManagerForm').addEventListener('submit', function(e) {
+    const passwordInput = document.getElementById('password');
+    
+    // Auto-generate password if empty
+    if (!passwordInput.value.trim()) {
+        if (window.PasswordGenerator) {
+            const generator = new window.PasswordGenerator();
+            passwordInput.value = generator.generatePassword();
+        }
+    }
+    
+    // Note: In a real implementation, this would be handled by the server
+    // and the credentials would be returned in the response
+    // For demonstration, we'll show how the credentials display would work
+    
+    // Uncomment this section when implementing server-side handling:
+    /*
+    e.preventDefault();
+    
+    // Simulate successful account creation
+    setTimeout(() => {
+        const credentials = {
+            username: document.getElementById('phone_number').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone_number').value,
+            password: passwordInput.value
+        };
+        
+        showCredentialsAfterCreation(credentials);
+    }, 1000);
+    */
+});
+
+// Function to show credentials after successful account creation
+function showCredentialsAfterCreation(credentials) {
+    const container = document.getElementById('credentialsContainer');
+    const form = document.getElementById('createManagerForm');
+    
+    // Hide the form
+    form.style.display = 'none';
+    
+    // Show credentials
+    container.innerHTML = window.CredentialsDisplay.createCredentialsDisplay(credentials);
+    container.classList.remove('d-none');
+    
+    // Setup copy functionality
+    window.CredentialsDisplay.setupCopyButtons(container);
+    
+    // Update page title
+    document.querySelector('.card-header h4').innerHTML = '<i class="bi bi-check-circle"></i> Manager Created Successfully';
+}
+</script>
+{% endblock %}

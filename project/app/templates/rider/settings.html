@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4"><i class="bi bi-gear"></i> Settings</h2>
+    
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">Account Settings</h5>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('profile.view') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-person"></i> Edit Profile
+                        </a>
+                        <a href="#" class="btn btn-outline-secondary">
+                            <i class="bi bi-key"></i> Change Password
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">Help & Support</h5>
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('main.terms') }}" class="btn btn-outline-info" target="_blank">
+                            <i class="bi bi-file-text"></i> Terms & Conditions
+                        </a>
+                        <a href="{{ url_for('main.privacy') }}" class="btn btn-outline-info" target="_blank">
+                            <i class="bi bi-shield-check"></i> Privacy Policy
+                        </a>
+                        <a href="{{ url_for('reports.bug_report') }}" class="btn btn-outline-danger">
+                            <i class="bi bi-bug"></i> Report a Bug
+                        </a>
+                        <a href="{{ url_for('reports.list_reports') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-flag"></i> My Reports
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

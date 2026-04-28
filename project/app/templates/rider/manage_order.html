@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Order #{{ order.id }} - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4"><i class="bi bi-pencil"></i> Manage Order #{{ order.id }}</h2>
+    
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">Update Order Status</h5>
+                    <form method="POST" action="{{ url_for('orders.manage', order_id=order.id) }}">
+                        <div class="mb-3">
+                            <label class="form-label">Current Status: <strong class="text-primary">{{ order.status|upper }}</strong></label>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Update to:</label>
+                            <select class="form-select" id="status" name="status" required>
+                                <option value="">Select status...</option>
+                                {% if order.status == 'accepted' %}
+                                    <option value="in_progress">In Progress (Started Delivery)</option>
+                                {% endif %}
+                                {% if order.status in ['accepted', 'in_progress'] %}
+                                    <option value="completed">Completed (Delivered)</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                        
+                        <div class="alert alert-info small">
+                            <strong>Note:</strong> Make sure to update your location and notify the customer of your progress.
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Update Status
+                            </button>
+                            <a href="{{ url_for('orders.detail', order_id=order.id) }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Back to Details
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-6">
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">Order Information</h5>
+                    <p><strong>Store:</strong> {{ order.store_name }}</p>
+                    <p><strong>Destination:</strong><br>{{ order.destination_address }}</p>
+                    <p><strong>Customer:</strong> {{ order.consumer.full_name }}</p>
+                    <p><strong>Contact:</strong> {{ order.consumer.phone_number }}</p>
+                    {% if order.instructions %}
+                    <p><strong>Instructions:</strong><br>{{ order.instructions }}</p>
+                    {% endif %}
+                    <p class="mb-0"><strong>Your Earnings:</strong> <span class="text-success">₱{{ "%.2f"|format(order.rider_earnings) }}</span></p>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold">Items to Purchase</h5>
+                    <ul class="list-group list-group-flush">
+                        {% for item in order.items %}
+                        <li class="list-group-item px-0">
+                            {{ item.item_name }} (x{{ item.quantity }})
+                            {% if item.estimated_price %}
+                            <span class="text-muted">- ₱{{ "%.2f"|format(item.estimated_price) }}</span>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

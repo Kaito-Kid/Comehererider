@@ -1,0 +1,28 @@
+services:
+  chr:
+    build: ./project
+    container_name: chr
+    ports:
+      - "5000:5000"
+    volumes:
+      - logs:/app/logs
+      - uploads:/app/app/static/uploads
+      - instance:/app/instance
+    env_file:
+      - ./project/.env
+    networks:
+      - main-network
+      - database-network
+
+volumes:
+  logs:
+  uploads:
+  instance:
+
+networks:
+  main-network:
+    name: main-network
+    external: true
+  database-network:
+    name: database-network
+    external: true

@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}View Log: {{ filename }} - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0"><i class="bi bi-file-earmark-text"></i> {{ filename }}</h2>
+        <div>
+            <button onclick="scrollToBottom()" class="btn btn-outline-primary me-2">
+                <i class="bi bi-arrow-down"></i> Scroll to Bottom
+            </button>
+            <button onclick="scrollToTop()" class="btn btn-outline-primary me-2">
+                <i class="bi bi-arrow-up"></i> Scroll to Top
+            </button>
+            <a href="{{ url_for('admin.system_logs') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Logs
+            </a>
+        </div>
+    </div>
+    
+    <!-- Log Content -->
+    <div class="card">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-terminal"></i> Log Content (Last 1000 lines)</span>
+            <small>{{ filename }}</small>
+        </div>
+        <div class="card-body p-0">
+            <pre id="log-content" class="mb-0 p-3" style="background-color: #1e1e1e; color: #d4d4d4; font-family: 'Courier New', monospace; font-size: 12px; max-height: 70vh; overflow-y: auto; white-space: pre-wrap;">{{ content }}</pre>
+        </div>
+    </div>
+    
+    <!-- Log Statistics -->
+    <div class="row g-3 mt-4">
+        <div class="col-md-3">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h5 class="text-info">{{ content.count('\n') + 1 if content else 0 }}</h5>
+                    <p class="mb-0">Lines Shown</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-danger">
+                <div class="card-body text-center">
+                    <h5 class="text-danger">{{ content.upper().count('ERROR') if content else 0 }}</h5>
+                    <p class="mb-0">Error Messages</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-warning">
+                <div class="card-body text-center">
+                    <h5 class="text-warning">{{ content.upper().count('WARNING') if content else 0 }}</h5>
+                    <p class="mb-0">Warning Messages</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <h5 class="text-success">{{ content.upper().count('INFO') if content else 0 }}</h5>
+                    <p class="mb-0">Info Messages</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Log Legend -->
+    <div class="alert alert-info mt-4">
+        <h6 class="alert-heading"><i class="bi bi-info-circle"></i> Log Level Guide</h6>
+        <div class="row">
+            <div class="col-md-3">
+                <span class="badge bg-success me-2">INFO</span> General information
+            </div>
+            <div class="col-md-3">
+                <span class="badge bg-warning me-2">WARNING</span> Potential issues
+            </div>
+            <div class="col-md-3">
+                <span class="badge bg-danger me-2">ERROR</span> System errors
+            </div>
+            <div class="col-md-3">
+                <span class="badge bg-dark me-2">DEBUG</span> Debug information
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function scrollToBottom() {
+    const logContent = document.getElementById('log-content');
+    logContent.scrollTop = logContent.scrollHeight;
+}
+
+function scrollToTop() {
+    const logContent = document.getElementById('log-content');
+    logContent.scrollTop = 0;
+}
+
+// Auto-scroll to bottom on page load for recent logs
+document.addEventListener('DOMContentLoaded', function() {
+    scrollToBottom();
+});
+
+// Highlight different log levels with colors
+document.addEventListener('DOMContentLoaded', function() {
+    const logContent = document.getElementById('log-content');
+    let content = logContent.innerHTML;
+    
+    // Highlight different log levels
+    content = content.replace(/ERROR/g, '<span style="color: #ff6b6b; font-weight: bold;">ERROR</span>');
+    content = content.replace(/WARNING/g, '<span style="color: #ffd93d; font-weight: bold;">WARNING</span>');
+    content = content.replace(/INFO/g, '<span style="color: #6bcf7f; font-weight: bold;">INFO</span>');
+    content = content.replace(/DEBUG/g, '<span style="color: #74c0fc; font-weight: bold;">DEBUG</span>');
+    
+    // Highlight timestamps (assuming format like [2023-11-12 20:21:09,037])
+    content = content.replace(/\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3})\]/g, 
+        '<span style="color: #a78bfa;">[$1]</span>');
+    
+    logContent.innerHTML = content;
+});
+</script>
+{% endblock %}

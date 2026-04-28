@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Rate Order #{{ order.id }} - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="text-center fw-bold mb-4">
+                        <i class="bi bi-star"></i> Rate Your Experience
+                    </h3>
+                    
+                    {% if current_user.role_type == 'consumer' %}
+                        <div class="text-center mb-4">
+                            <p class="lead">How was your experience with {{ order.rider.full_name }}?</p>
+                        </div>
+                    {% else %}
+                        <div class="text-center mb-4">
+                            <p class="lead">How was your experience with {{ order.consumer.full_name }}?</p>
+                        </div>
+                    {% endif %}
+                    
+                    <form method="POST" action="{{ url_for('orders.rate', order_id=order.id) }}">
+                        <!-- Star Rating -->
+                        <div class="mb-4 text-center">
+                            <label class="form-label fw-bold d-block">Rating *</label>
+                            <div class="star-rating">
+                                <input type="radio" id="star5" name="rating" value="5" required />
+                                <label for="star5" title="5 stars">
+                                    <i class="bi bi-star-fill"></i>
+                                </label>
+                                
+                                <input type="radio" id="star4" name="rating" value="4" />
+                                <label for="star4" title="4 stars">
+                                    <i class="bi bi-star-fill"></i>
+                                </label>
+                                
+                                <input type="radio" id="star3" name="rating" value="3" />
+                                <label for="star3" title="3 stars">
+                                    <i class="bi bi-star-fill"></i>
+                                </label>
+                                
+                                <input type="radio" id="star2" name="rating" value="2" />
+                                <label for="star2" title="2 stars">
+                                    <i class="bi bi-star-fill"></i>
+                                </label>
+                                
+                                <input type="radio" id="star1" name="rating" value="1" />
+                                <label for="star1" title="1 star">
+                                    <i class="bi bi-star-fill"></i>
+                                </label>
+                            </div>
+                            <p class="small text-muted mt-2">Click on the stars to rate</p>
+                        </div>
+                        
+                        <!-- Feedback -->
+                        <div class="mb-4">
+                            <label for="feedback" class="form-label fw-bold">Feedback (Optional)</label>
+                            <textarea class="form-control" id="feedback" name="feedback" rows="4" placeholder="Share your experience..."></textarea>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle"></i> Submit Rating
+                            </button>
+                            <a href="{{ url_for('orders.detail', order_id=order.id) }}" class="btn btn-outline-secondary">
+                                Skip for Now
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.star-rating {
+    direction: rtl;
+    display: inline-flex;
+    font-size: 3rem;
+}
+
+.star-rating input[type="radio"] {
+    display: none;
+}
+
+.star-rating label {
+    color: #ddd;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input[type="radio"]:checked ~ label {
+    color: #ffc107;
+}
+</style>
+{% endblock %}

@@ -1,0 +1,27 @@
+# Flask Core
+Flask==3.0.0
+Werkzeug==3.0.1
+
+# Database
+Flask-SQLAlchemy==3.1.1
+Flask-Migrate==4.0.5
+PyMySQL==1.1.0
+cryptography==41.0.7
+
+# Authentication
+Flask-Login==0.6.3
+Flask-Bcrypt==1.0.1
+
+# Extensions
+Flask-CORS==4.0.0
+python-dotenv==1.0.0
+
+# Production Server
+gunicorn==21.2.0
+
+# Rate Limiting
+Flask-Limiter==3.5.0
+
+# Forms and Validation
+WTForms==3.1.1
+Flask-WTF==1.2.1

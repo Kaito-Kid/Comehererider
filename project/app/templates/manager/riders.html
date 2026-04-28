@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}My Riders - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-0"><i class="bi bi-bicycle"></i> My Riders</h2>
+            <div class="alert alert-info mt-2 mb-0 py-2 d-inline-block">
+                <small><i class="bi bi-info-circle"></i> Riders assigned to you for management</small>
+            </div>
+        </div>
+        <a href="{{ url_for('manager.create_rider') }}" class="btn btn-primary">
+            <i class="bi bi-person-plus"></i> Create New Rider
+        </a>
+    </div>
+
+    {% if riders %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Rating</th>
+                        <th>Orders</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rider in riders %}
+                    <tr>
+                        <td>#{{ rider.id }}</td>
+                        <td>{{ rider.full_name }}</td>
+                        <td>{{ rider.phone_number }}</td>
+                        <td>{{ rider.email or 'N/A' }}</td>
+                        <td>
+                            <span class="badge bg-{% if rider.is_active %}success{% else %}secondary{% endif %}">
+                                {{ 'Active' if rider.is_active else 'Inactive' }}
+                            </span>
+                            {% if rider.is_available %}
+                                <span class="badge bg-info">Available</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if rider.average_rating > 0 %}
+                                <div class="d-flex align-items-center">
+                                    <span class="me-1">{{ "%.1f"|format(rider.average_rating) }}</span>
+                                    {% for i in range(5) %}
+                                        {% if i < rider.average_rating %}
+                                            <i class="bi bi-star-fill text-warning"></i>
+                                        {% else %}
+                                            <i class="bi bi-star text-muted"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <span class="text-muted">No ratings</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ rider.total_orders_completed }}</td>
+                        <td>{{ rider.created_at.strftime('%b %d, %Y') }}</td>
+                        <td>
+                            <a href="{{ url_for('manager.edit_rider', rider_id=rider.id) }}"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Rider Stats -->
+        <div class="row g-3 mt-4">
+            <div class="col-md-3">
+                <div class="card border-success">
+                    <div class="card-body text-center">
+                        <h5 class="text-success">{{ riders|selectattr('is_active')|list|length }}</h5>
+                        <p class="mb-0">Active Riders</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-info">
+                    <div class="card-body text-center">
+                        <h5 class="text-info">{{ riders|selectattr('is_available')|list|length }}</h5>
+                        <p class="mb-0">Available Now</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-warning">
+                    <div class="card-body text-center">
+                        <h5 class="text-warning">{{ (riders|sum(attribute='total_orders_completed')) or 0 }}</h5>
+                        <p class="mb-0">Total Orders</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-primary">
+                    <div class="card-body text-center">
+                        <h5 class="text-primary">{{ "%.1f"|format((riders|selectattr('average_rating', 'greaterthan', 0)|map(attribute='average_rating')|sum / (riders|selectattr('average_rating', 'greaterthan', 0)|list|length)) if (riders|selectattr('average_rating', 'greaterthan', 0)|list|length) > 0 else 0) }}</h5>
+                        <p class="mb-0">Avg Rating</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> No riders assigned to you yet.
+        </div>
+    {% endif %}
+
+    <div class="mt-4">
+        <a href="{{ url_for('manager.dashboard') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

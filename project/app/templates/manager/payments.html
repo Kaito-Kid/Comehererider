@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Weekly Payments - Manager{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="fw-bold mb-3"><i class="bi bi-wallet2"></i> Weekly Payments (Managed Riders)</h2>
+  <p class="text-muted">Week: {{ start_of_week.strftime('%b %d, %Y') }} - {{ end_of_week.strftime('%b %d, %Y') }}</p>
+
+  <div class="mb-3 d-flex gap-2">
+    <a class="btn btn-outline-secondary" href="{{ url_for('manager.payments', weeks_ago=weeks_ago+1) }}"><i class="bi bi-arrow-left"></i> Previous</a>
+    {% if weeks_ago > 0 %}
+    <a class="btn btn-outline-secondary" href="{{ url_for('manager.payments', weeks_ago=weeks_ago-1) }}">Next <i class="bi bi-arrow-right"></i></a>
+    {% else %}
+    <a class="btn btn-outline-secondary disabled">Next <i class="bi bi-arrow-right"></i></a>
+    {% endif %}
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title fw-bold">Summary</h5>
+          <p class="mb-1"><strong>Total Completed Orders:</strong> {{ total_orders }}</p>
+          <p class="mb-1"><strong>Manager Total:</strong> ₱{{ '%.2f'|format(manager_total or 0) }}</p>
+          <p class="mb-0"><strong>Riders Total:</strong> ₱{{ '%.2f'|format(rider_total or 0) }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title fw-bold">By Rider</h5>
+          {% if summary %}
+          <div class="table-responsive">
+            <table class="table table-striped align-middle">
+              <thead>
+                <tr>
+                  <th>Rider</th>
+                  <th class="text-center">Orders</th>
+                  <th class="text-end">Rider ₱</th>
+                  <th class="text-end">Manager ₱</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for rid, info in summary.items() %}
+                <tr>
+                  <td>{{ info.rider.full_name if info.rider else ('Rider #' ~ rid) }}</td>
+                  <td class="text-center">{{ info.orders }}</td>
+                  <td class="text-end">{{ '%.2f'|format(info.rider_total or 0) }}</td>
+                  <td class="text-end">{{ '%.2f'|format(info.manager_total or 0) }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p class="text-muted mb-0">No completed orders for this week.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

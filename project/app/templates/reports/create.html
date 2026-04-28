@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Report - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4"><i class="bi bi-flag"></i> Submit Report</h2>
+    
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('reports.create') }}">
+                        <!-- Report Type -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Report Type *</label>
+                            <select class="form-select" name="report_type" id="report_type" required {% if report_type %}disabled{% endif %}>
+                                <option value="">Select type...</option>
+                                <option value="user_report" {% if report_type == 'user_report' or (reported_user and reported_user.role_type == 'rider') %}selected{% endif %}>
+                                    Report User Issue
+                                </option>
+                                <option value="rider_report" {% if report_type == 'rider_report' or (reported_user and reported_user.role_type == 'consumer') %}selected{% endif %}>
+                                    Report Rider Issue
+                                </option>
+                                <option value="bug_report" {% if report_type == 'bug_report' %}selected{% endif %}>
+                                    Report Bug/System Issue
+                                </option>
+                            </select>
+                            {% if report_type %}
+                                <input type="hidden" name="report_type" value="{{ report_type }}">
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Reported User (for user/rider reports) -->
+                        <div id="reportedUserSection" class="reported-user-section {% if report_type == 'bug_report' %}d-none{% endif %}">
+                            {% if reported_user %}
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Reporting About</label>
+                                    <div class="alert alert-info">
+                                        <strong>{{ reported_user.full_name }}</strong><br>
+                                        <small>{{ reported_user.role_type|title }} - {{ reported_user.phone_number }}</small>
+                                    </div>
+                                    <input type="hidden" name="reported_user_id" value="{{ reported_user.id }}">
+                                </div>
+                            {% else %}
+                                <div class="mb-3">
+                                    <label for="reported_user_id" class="form-label fw-bold">User/Rider ID (if applicable)</label>
+                                    <input type="number" class="form-control" name="reported_user_id" id="reported_user_id">
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Related Order -->
+                        {% if order %}
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">Related Order</label>
+                                <div class="alert alert-info">
+                                    Order #{{ order.id }} - {{ order.store_name }}
+                                </div>
+                                <input type="hidden" name="related_order_id" value="{{ order.id }}">
+                            </div>
+                        {% else %}
+                            <div class="mb-3">
+                                <label for="related_order_id" class="form-label fw-bold">Related Order ID (if applicable)</label>
+                                <input type="number" class="form-control" name="related_order_id" id="related_order_id">
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Category -->
+                        <div class="mb-3">
+                            <label for="category" class="form-label fw-bold">Category *</label>
+                            <select class="form-select" name="category" id="category" required>
+                                <option value="">Select category...</option>
+                                <option value="harassment">Harassment</option>
+                                <option value="inappropriate_behavior">Inappropriate Behavior</option>
+                                <option value="order_issue">Order Issue</option>
+                                <option value="payment_issue">Payment Issue</option>
+                                <option value="delivery_issue">Delivery Issue</option>
+                                <option value="system_bug">System Bug</option>
+                                <option value="feature_request">Feature Request</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Title -->
+                        <div class="mb-3">
+                            <label for="title" class="form-label fw-bold">Title *</label>
+                            <input type="text" class="form-control" name="title" id="title" required placeholder="Brief summary of the issue">
+                        </div>
+                        
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="description" class="form-label fw-bold">Detailed Description *</label>
+                            <textarea class="form-control" name="description" id="description" rows="6" required placeholder="Please provide as much detail as possible about the issue..."></textarea>
+                            <small class="text-muted">Include specific details, dates, times, and any relevant information.</small>
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i> <strong>Important:</strong> False reports may result in account suspension. Please ensure all information is accurate.
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex">
+                            <button type="submit" class="btn btn-danger btn-lg">
+                                <i class="bi bi-flag"></i> Submit Report
+                            </button>
+                            <a href="javascript:history.back()" class="btn btn-outline-secondary btn-lg">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('report_type').addEventListener('change', function() {
+    const reportedUserSection = document.getElementById('reportedUserSection');
+    if (this.value === 'bug_report') {
+        reportedUserSection.style.display = 'none';
+    } else {
+        reportedUserSection.style.display = 'block';
+    }
+});
+</script>
+{% endblock %}

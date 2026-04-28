@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Become a Rider - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-lg border-0">
+        <div class="card-body p-5">
+          <div class="text-center mb-5">
+            <i class="bi bi-bicycle text-primary" style="font-size: 4rem;"></i>
+            <h2 class="fw-bold mt-3">Become a Delivery Rider</h2>
+            <p class="lead text-muted">Join our team and start earning by delivering goods to your community</p>
+          </div>
+
+          <div class="alert alert-info mb-4">
+            <h5 class="alert-heading"><i class="bi bi-info-circle"></i> Important Notice</h5>
+            <p class="mb-0">Rider accounts managed by authorized Managers from Driver Organizations, to ensure quality
+              and safety. Follow the steps below to get started.</p>
+          </div>
+
+          <div class="row g-4">
+            <div class="col-md-6">
+              <div class="card border-primary">
+                <div class="card-body">
+                  <h5 class="card-title text-primary fw-bold">
+                    <i class="bi bi-telephone"></i> Contact Information
+                  </h5>
+                  <p class="card-text">
+                    Reach out to our Rider Management team to express your interest and get information about available
+                    positions.
+                  </p>
+                  <ul class="list-unstyled">
+                    <li><strong>Name:</strong> Maricon Tuvida</li>
+                    <li><strong>Phone:</strong> <a href="tel:+1234567890">(+63) 9197745391</a></li>
+                    <li><strong>Email:</strong> <a href="mailto:tuvidamaricon@yahoo.com">tuvidamaricon@yahoo.com</a></li>
+                    <li><strong>Second Email:</strong> <a href="mailto:comehererider@gmail.com">comehererider@gmail.com</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="card border-success">
+                <div class="card-body">
+                  <h5 class="card-title text-success fw-bold">
+                    <i class="bi bi-file-earmark-check"></i> Requirements
+                  </h5>
+                  <p class="card-text">To become a delivery rider, you'll need:</p>
+                  <ul>
+                    <li>Valid driver's license</li>
+                    <li>Own vehicle (tricycle, motorcycle, or bicycle)</li>
+                    <li>Smartphone with internet connection</li>
+                    <li>Valid government ID</li>
+                    <li>Good knowledge of local area</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-5">
+            <h4 class="fw-bold mb-3">How to Get Started:</h4>
+            <ol class="list-group list-group-numbered">
+              <li class="list-group-item">
+                <strong>Contact our Rider Management team</strong> using the information above
+              </li>
+              <li class="list-group-item">
+                <strong>Schedule an interview</strong> to discuss your application and requirements
+              </li>
+              <li class="list-group-item">
+                <strong>Submit required documents</strong> (ID, vehicle registration, etc.)
+              </li>
+              <li class="list-group-item">
+                <strong>Complete training</strong> on app usage and delivery procedures
+              </li>
+              <li class="list-group-item">
+                <strong>Receive your rider account</strong> and start earning!
+              </li>
+            </ol>
+          </div>
+
+          <div class="text-center mt-5">
+            <h5 class="fw-bold mb-3">Ready to Join Our Team?</h5>
+            <div class="d-flex gap-3 justify-content-center">
+              <a href="tel:0000000000" class="btn btn-primary btn-lg">
+                <i class="bi bi-telephone"></i> Call Now
+              </a>
+              <a href="mailto:riders@comehere.com" class="btn btn-success btn-lg">
+                <i class="bi bi-envelope"></i> Email Us
+              </a>
+              <a href="{{ url_for('main.index') }}" class="btn btn-outline-secondary btn-lg">
+                <i class="bi bi-arrow-left"></i> Back to Home
+              </a>
+            </div>
+          </div>
+
+          <div class="alert alert-warning mt-4">
+            <h6 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> Note:</h6>
+            <p class="mb-0">Self-registration for riders is not available. All rider accounts are created and verified
+              by our authorized Rider Managers to maintain service quality and safety standards.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

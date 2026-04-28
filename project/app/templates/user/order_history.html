@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Order History - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4"><i class="bi bi-clock-history"></i> Order History</h2>
+    
+    {% if orders %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th>Store</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Commission</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>{{ order.store_name }}</td>
+                        <td>
+                            <span class="badge bg-{% if order.status == 'completed' %}success{% elif order.status == 'cancelled' %}danger{% elif order.status == 'pending' %}warning{% else %}primary{% endif %}">
+                                {{ order.status }}
+                            </span>
+                        </td>
+                        <td>{{ order.created_at.strftime('%b %d, %Y') }}</td>
+                        <td>₱{{ "%.2f"|format(order.total_commission) }}</td>
+                        <td>
+                            <a href="{{ url_for('orders.detail', order_id=order.id) }}" class="btn btn-sm btn-outline-primary">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> No orders yet. <a href="{{ url_for('orders.create') }}">Create your first order!</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

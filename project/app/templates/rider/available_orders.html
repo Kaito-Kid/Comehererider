@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Available Orders - ComeHere Rider{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4"><i class="bi bi-list-check"></i> Available Orders</h2>
+    
+    {% if orders %}
+        <div class="row g-3">
+            {% for order in orders %}
+            <div class="col-md-6">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">{{ order.store_name }}</h5>
+                            <span class="badge bg-warning">₱{{ "%.2f"|format(order.rider_earnings) }}</span>
+                        </div>
+                        <p class="text-muted small mb-2">
+                            <i class="bi bi-person"></i> {{ order.consumer.full_name }}<br>
+                            <i class="bi bi-geo-alt"></i> {{ order.destination_address[:50] }}...
+                        </p>
+                        <p class="mb-2"><strong>Items:</strong> {{ order.items.count() }} item(s)</p>
+                        <p class="small text-muted mb-3">
+                            <i class="bi bi-clock"></i> {{ order.created_at|local_time }}
+                        </p>
+                        <form method="POST" action="{{ url_for('orders.accept', order_id=order.id) }}" class="d-inline">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Accept Order
+                            </button>
+                        </form>
+                        <a href="{{ url_for('orders.detail', order_id=order.id) }}" class="btn btn-outline-secondary">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle"></i> No available orders at the moment. Check back later!
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

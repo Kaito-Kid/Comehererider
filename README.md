@@ -7,7 +7,6 @@ A web application and PWA for delivery riders to deliver goods to consumers in r
 **Payment System**: Cash-based with commission structure
 
 ## Key Features
-- Web-based application with PWA support
 - Real-time order updates and tracking
 - Live geolocation of riders (OpenStreetMap)
 - Role-based access (Admin, Managers, Riders, Users)
